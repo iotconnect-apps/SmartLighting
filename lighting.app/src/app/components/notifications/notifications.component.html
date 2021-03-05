@@ -1,0 +1,301 @@
+<section class="content-header">
+  <h1>Notifications</h1>
+  <div class="content-header-action">
+    <div class="p-l-10">
+      <button [ngClass]="isFilterShow ? 'grid-icon-active' : 'grid-icon' " type="button" mat-flat-button color="primary"
+        class="width-auto text-white" (click)="showHideFilter()">
+        <img src="../../../../assets/images/filter-icon-white.svg" alt="">
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="content">
+  <mat-card class="example-card filter-card" *ngIf="isFilterShow">
+    <mat-card-header class="filter-card-head">
+      <a href="javascript:void()" (click)="showHideFilter()"><img src="../../../../assets/images/close-icon.svg"
+          alt=""></a>
+    </mat-card-header>
+    <mat-card-content>
+      <form>
+        <div class="filter-wrap">
+          <div class="filter-label">
+            <label for=""><img src="../../../assets/images/filter-icon.svg" alt=""><span>Filter</span></label>
+          </div>
+          <div class="filter-form-field">
+            <ul class="filter-list-form">
+              <li>
+                <label class="form-label">Building</label>
+                <div class="support-field">
+                  <div class="field-input">
+                    <mat-form-field>
+                      <mat-select placeholder="Select Building">
+                        <mat-option *ngFor="let building of buildings" [value]="building.value">
+                          {{building.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <label class="form-label">Zone Type</label>
+                <div class="support-field">
+                  <div class="field-input">
+                    <mat-form-field>
+                      <mat-select placeholder="Select Zone Type">
+                        <mat-option *ngFor="let zoneType of zoneTypes" [value]="zoneType.value">
+                          {{zoneType.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <label class="form-label">Parking</label>
+                <div class="support-field">
+                  <div class="field-input">
+                    <mat-form-field>
+                      <mat-select placeholder="Select Parking">
+                        <mat-option *ngFor="let zoneName of zoneNames" [value]="zoneName.value">
+                          {{zoneName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="filter-form-action">
+                  <button type="button" mat-flat-button color="primary">Apply</button>
+                  <button type="button" mat-flat-button color="primary" class="text-white m-l-10">Clear</button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="content">
+  <mat-tab-group>
+    <mat-tab label="High Voltage">
+      <div class="sticky-table-wrapper table-container">
+        <table mat-table [dataSource]="notificationsList" matSort matSortDirection="asc" matSortDisableClear
+          class="mat-table sticky-cell-class">
+          <ng-container matColumnDef="message">
+            <th mat-header-cell *matHeaderCellDef class=""> Message </th>
+            <td mat-cell *matCellDef="let element;"> {{ element.message }} </td>
+          </ng-container>
+          <ng-container matColumnDef="building">
+            <th mat-header-cell *matHeaderCellDef class=""> Building Name </th>
+            <td mat-cell *matCellDef="let element">{{element.building}}</td>
+          </ng-container>
+          <ng-container matColumnDef="attachedPole">
+            <th mat-header-cell *matHeaderCellDef> Attached Pole </th>
+            <td mat-cell *matCellDef="let element"> {{element.attachedPole}} </td>
+          </ng-container>
+          <ng-container matColumnDef="capacity">
+            <th mat-header-cell *matHeaderCellDef> Capacity </th>
+            <td mat-cell *matCellDef="let element"> {{element.capacity}} </td>
+          </ng-container>
+          <ng-container matColumnDef="detectedVoltage">
+            <th mat-header-cell *matHeaderCellDef> Detected Voltage </th>
+            <td mat-cell *matCellDef="let element"> {{element.detectedVoltage}} </td>
+          </ng-container>
+          <ng-container matColumnDef="template">
+            <th mat-header-cell *matHeaderCellDef> Template </th>
+            <td mat-cell *matCellDef="let element"> {{element.template}} </td>
+          </ng-container>
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+          </ng-container>
+          <ng-container matColumnDef="severity">
+            <th mat-header-cell *matHeaderCellDef> Severity </th>
+            <td mat-cell *matCellDef="let element"> 
+              <span class="severity-noitfy" [ngClass]="element.severity"> {{element.severity}} </span>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-tab>
+    <mat-tab label="Internal Communication Error">
+      <div class="sticky-table-wrapper table-container">
+        <table mat-table [dataSource]="notificationsList" matSort matSortDirection="asc" matSortDisableClear
+          class="mat-table sticky-cell-class">
+          <ng-container matColumnDef="message">
+            <th mat-header-cell *matHeaderCellDef class=""> Message </th>
+            <td mat-cell *matCellDef="let element;"> {{ element.message }} </td>
+          </ng-container>
+          <ng-container matColumnDef="building">
+            <th mat-header-cell *matHeaderCellDef class=""> Building Name </th>
+            <td mat-cell *matCellDef="let element">{{element.building}}</td>
+          </ng-container>
+          <ng-container matColumnDef="attachedPole">
+            <th mat-header-cell *matHeaderCellDef> Attached Pole </th>
+            <td mat-cell *matCellDef="let element"> {{element.attachedPole}} </td>
+          </ng-container>
+          <ng-container matColumnDef="capacity">
+            <th mat-header-cell *matHeaderCellDef> Capacity </th>
+            <td mat-cell *matCellDef="let element"> {{element.capacity}} </td>
+          </ng-container>
+          <ng-container matColumnDef="detectedVoltage">
+            <th mat-header-cell *matHeaderCellDef> Detected Voltage </th>
+            <td mat-cell *matCellDef="let element"> {{element.detectedVoltage}} </td>
+          </ng-container>
+          <ng-container matColumnDef="template">
+            <th mat-header-cell *matHeaderCellDef> Template </th>
+            <td mat-cell *matCellDef="let element"> {{element.template}} </td>
+          </ng-container>
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+          </ng-container>
+          <ng-container matColumnDef="severity">
+            <th mat-header-cell *matHeaderCellDef> Severity </th>
+            <td mat-cell *matCellDef="let element"> 
+              <span class="severity-noitfy" [ngClass]="element.severity"> {{element.severity}} </span>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-tab>
+    <mat-tab label="Low Voltage">
+      <div class="sticky-table-wrapper table-container">
+        <table mat-table [dataSource]="notificationsList" matSort matSortDirection="asc" matSortDisableClear
+          class="mat-table sticky-cell-class">
+          <ng-container matColumnDef="message">
+            <th mat-header-cell *matHeaderCellDef class=""> Message </th>
+            <td mat-cell *matCellDef="let element;"> {{ element.message }} </td>
+          </ng-container>
+          <ng-container matColumnDef="building">
+            <th mat-header-cell *matHeaderCellDef class=""> Building Name </th>
+            <td mat-cell *matCellDef="let element">{{element.building}}</td>
+          </ng-container>
+          <ng-container matColumnDef="attachedPole">
+            <th mat-header-cell *matHeaderCellDef> Attached Pole </th>
+            <td mat-cell *matCellDef="let element"> {{element.attachedPole}} </td>
+          </ng-container>
+          <ng-container matColumnDef="capacity">
+            <th mat-header-cell *matHeaderCellDef> Capacity </th>
+            <td mat-cell *matCellDef="let element"> {{element.capacity}} </td>
+          </ng-container>
+          <ng-container matColumnDef="detectedVoltage">
+            <th mat-header-cell *matHeaderCellDef> Detected Voltage </th>
+            <td mat-cell *matCellDef="let element"> {{element.detectedVoltage}} </td>
+          </ng-container>
+          <ng-container matColumnDef="template">
+            <th mat-header-cell *matHeaderCellDef> Template </th>
+            <td mat-cell *matCellDef="let element"> {{element.template}} </td>
+          </ng-container>
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+          </ng-container>
+          <ng-container matColumnDef="severity">
+            <th mat-header-cell *matHeaderCellDef> Severity </th>
+            <td mat-cell *matCellDef="let element"> 
+              <span class="severity-noitfy" [ngClass]="element.severity"> {{element.severity}} </span>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-tab>
+    <mat-tab label="Strike Fail">
+      <div class="sticky-table-wrapper table-container">
+        <table mat-table [dataSource]="notificationsList" matSort matSortDirection="asc" matSortDisableClear
+          class="mat-table sticky-cell-class">
+          <ng-container matColumnDef="message">
+            <th mat-header-cell *matHeaderCellDef class=""> Message </th>
+            <td mat-cell *matCellDef="let element;"> {{ element.message }} </td>
+          </ng-container>
+          <ng-container matColumnDef="building">
+            <th mat-header-cell *matHeaderCellDef class=""> Building Name </th>
+            <td mat-cell *matCellDef="let element">{{element.building}}</td>
+          </ng-container>
+          <ng-container matColumnDef="attachedPole">
+            <th mat-header-cell *matHeaderCellDef> Attached Pole </th>
+            <td mat-cell *matCellDef="let element"> {{element.attachedPole}} </td>
+          </ng-container>
+          <ng-container matColumnDef="capacity">
+            <th mat-header-cell *matHeaderCellDef> Capacity </th>
+            <td mat-cell *matCellDef="let element"> {{element.capacity}} </td>
+          </ng-container>
+          <ng-container matColumnDef="detectedVoltage">
+            <th mat-header-cell *matHeaderCellDef> Detected Voltage </th>
+            <td mat-cell *matCellDef="let element"> {{element.detectedVoltage}} </td>
+          </ng-container>
+          <ng-container matColumnDef="template">
+            <th mat-header-cell *matHeaderCellDef> Template </th>
+            <td mat-cell *matCellDef="let element"> {{element.template}} </td>
+          </ng-container>
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+          </ng-container>
+          <ng-container matColumnDef="severity">
+            <th mat-header-cell *matHeaderCellDef> Severity </th>
+            <td mat-cell *matCellDef="let element"> 
+              <span class="severity-noitfy" [ngClass]="element.severity"> {{element.severity}} </span>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-tab>
+    <mat-tab label="Panel Off">
+      <div class="sticky-table-wrapper table-container">
+        <table mat-table [dataSource]="notificationsList" matSort matSortDirection="asc" matSortDisableClear
+          class="mat-table sticky-cell-class">
+          <ng-container matColumnDef="message">
+            <th mat-header-cell *matHeaderCellDef class=""> Message </th>
+            <td mat-cell *matCellDef="let element;"> {{ element.message }} </td>
+          </ng-container>
+          <ng-container matColumnDef="building">
+            <th mat-header-cell *matHeaderCellDef class=""> Building Name </th>
+            <td mat-cell *matCellDef="let element">{{element.building}}</td>
+          </ng-container>
+          <ng-container matColumnDef="attachedPole">
+            <th mat-header-cell *matHeaderCellDef> Attached Pole </th>
+            <td mat-cell *matCellDef="let element"> {{element.attachedPole}} </td>
+          </ng-container>
+          <ng-container matColumnDef="capacity">
+            <th mat-header-cell *matHeaderCellDef> Capacity </th>
+            <td mat-cell *matCellDef="let element"> {{element.capacity}} </td>
+          </ng-container>
+          <ng-container matColumnDef="detectedVoltage">
+            <th mat-header-cell *matHeaderCellDef> Detected Voltage </th>
+            <td mat-cell *matCellDef="let element"> {{element.detectedVoltage}} </td>
+          </ng-container>
+          <ng-container matColumnDef="template">
+            <th mat-header-cell *matHeaderCellDef> Template </th>
+            <td mat-cell *matCellDef="let element"> {{element.template}} </td>
+          </ng-container>
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+          </ng-container>
+          <ng-container matColumnDef="severity">
+            <th mat-header-cell *matHeaderCellDef> Severity </th>
+            <td mat-cell *matCellDef="let element"> 
+              <span class="severity-noitfy" [ngClass]="element.severity"> {{element.severity}} </span>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

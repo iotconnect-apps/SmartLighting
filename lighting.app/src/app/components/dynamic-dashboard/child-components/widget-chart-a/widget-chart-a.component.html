@@ -1,0 +1,32 @@
+<div class="drag-body dashboard-widget">
+	<div class="panel-heading" [ngStyle]="{'background':widget?.widgetProperty?.background}">
+	  <h5 class="panel-title w-100" [ngStyle]="{'font-size':widget?.widgetProperty?.fontSize+'px',
+	  'font-family':widget?.widgetProperty?.fontFamily,
+	  'color':widget?.widgetProperty?.fontColor}"> {{widget?.widgetProperty?.title}} </h5>
+	</div>
+	<mat-card class="dashboard-card mat-card m-b-30 dynamic-chart-a">
+	  <mat-radio-group aria-label="Select an option" (change)="changeenergy($event)">
+		<mat-radio-button checked class="m-r-10" value="Day">Day</mat-radio-button>
+		<mat-radio-button class="m-r-10" value="Week">Week</mat-radio-button>
+		<mat-radio-button class="m-r-10" value="Month">Month</mat-radio-button>
+	  </mat-radio-group>
+	  <div  class="centerclass soil-nutritions no-records-usage-box "  *ngIf="graphdata.length == 0">
+		No Data found
+	  </div>
+	  <ng-scrollbar class="my-scrollbar" trackX="false" trackY="true"
+	  autohide="false" [compact]="false">
+		<ul class="usage-lights-list" *ngIf="graphdata.length != 0">
+		  <li *ngFor="let usage of graphdata;">
+			<div class="data-point-progress">
+			  <progress-bar  [progress]="getper(usage.energy)" [color]="'#00aeef'"
+			  [disable-percentage]="true"></progress-bar>
+			  <div class="data-point-progress-title">
+				<span>{{usage.energy}} KW</span>
+				<span>{{usage.zone}} in {{usage.building}}</span>
+			  </div>
+			</div>
+		  </li>
+		</ul>
+	  </ng-scrollbar>
+	</mat-card>
+  </div>

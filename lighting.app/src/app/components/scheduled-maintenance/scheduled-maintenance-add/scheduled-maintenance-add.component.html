@@ -1,0 +1,141 @@
+<!-- Content Header (Page header) -->
+
+<section class="content-header">
+  <h1>{{moduleName}}</h1>
+</section>
+<!-- Main content -->
+
+<section class="content">
+  <mat-card class="support-card">
+    <div class="row">
+      <div class="col col-ld-11">
+        <form [formGroup]="maintenanceForm" (ngSubmit)="scheduleMaintenance()" autocomplete="off" class="form-horizontal common-form">
+          <div class="row">
+            <div class="col-md-6">
+
+              <fieldset class="form-group form-field">
+                <label class="form-label">Start Date<b>*</b></label>
+                <mat-form-field>
+                  <input matInput [readonly]="true"  [min]="today"  
+                  [(ngModel)]="maintenanceObject['startDateTime']" 
+                  (ngModelChange)="onChangeStartDate(maintenanceObject['startDateTime'])"
+                  formControlName="startDateTime" [owlDateTime]="strtdt">
+                 <a href="javascript:;" matSuffix class="material-icons" [owlDateTimeTrigger]="strtdt">date_range</a>
+                  <owl-date-time #strtdt></owl-date-time>
+                  <div class="form-control-feedback" *ngIf="maintenanceForm.controls['startDateTime'].errors">
+                    <p class="form-tooltip-error sm"  [ngClass]="{'error':true}"
+                      *ngIf="maintenanceForm.controls['startDateTime'].errors.required && checkSubmitStatus">
+                      Please select Start Date
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-6">
+              <fieldset class="form-group form-field">
+                <label class="form-label">End Date<b>*</b></label>
+                <mat-form-field>
+                 <input matInput [readonly]="true"  [min]="endDateValidate"
+                  [(ngModel)]="maintenanceObject['endDateTime']" 
+                  formControlName="endDateTime" [owlDateTime]="enddt">
+                 <a href="javascript:;" matSuffix class="material-icons" [owlDateTimeTrigger]="enddt">date_range</a>
+                  <owl-date-time #enddt></owl-date-time>
+                  <div class="form-control-feedback" *ngIf="maintenanceForm.controls['endDateTime'].errors">
+                    <p class="form-tooltip-error sm"  [ngClass]="{'error':true}"
+                      *ngIf="maintenanceForm.controls['endDateTime'].errors.required && checkSubmitStatus">
+                      Please select Start Date
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Building<b>*</b></label>
+                <mat-form-field>
+                  <mat-select (selectionChange)="getWingList($event.value)" placeholder="Select Biulding" formControlName="buildingGuid" [(ngModel)]="maintenanceObject['buildingGuid']" tabindex="1">
+                    <mat-option *ngFor="let building of buildingList" [value]="building.value">
+                      {{building.text}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="form-control-feedback" *ngIf="maintenanceForm.controls['buildingGuid'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="maintenanceForm.controls['buildingGuid'].errors.required && checkSubmitStatus">
+                      Please select Building
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-6">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Zone<b>*</b></label>
+                <mat-form-field>
+                  <mat-select (selectionChange)="getElevatorList($event.value)" placeholder="Select Zone" formControlName="entityGuid" [(ngModel)]="maintenanceObject['entityGuid']" tabindex="2">
+                    <mat-option *ngFor="let wing of wingList" [value]="wing.value">
+                      {{wing.text}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="form-control-feedback" *ngIf="maintenanceForm.controls['entityGuid'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="maintenanceForm.controls['entityGuid'].errors.required && checkSubmitStatus">
+                      Please select Zone
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Light<b>*</b></label>
+                <mat-form-field>
+                  <mat-select placeholder="Select Light" formControlName="deviceGuid" [(ngModel)]="maintenanceObject['deviceGuid']" tabindex="3">
+                    <mat-option *ngFor="let elevator of elevatorList" [value]="elevator.value">
+                      {{elevator.text}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="form-control-feedback" *ngIf="maintenanceForm.controls['deviceGuid'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="maintenanceForm.controls['deviceGuid'].errors.required && checkSubmitStatus">
+                      Please select Light
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-6">
+              <fieldset class="form-group">
+                <label class="form-label">Description</label>
+                <mat-form-field>
+                  <textarea matInput rows="3" class="form-control" formControlName="description" placeholder="description"
+                            name="description" [(ngModel)]="maintenanceObject['description']"
+                            tabindex="5" maxlength="255"></textarea>
+                </mat-form-field>
+              </fieldset>
+            </div>
+          </div>
+       
+          <div class="row mt-4 mb-0">
+            <div class="col-lg-12">
+              <div class="form-field">
+                <div class="input-field ">
+                  <button mat-flat-button color="primary"
+                          class="text-white " title="Submit" type="submit">
+                    {{buttonname}}
+                  </button>
+                  <button mat-flat-button color="primary" class="text-white m-l-10" [routerLink]="['/maintenance']" title="Cancel">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-card>
+</section>

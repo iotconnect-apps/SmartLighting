@@ -1,0 +1,327 @@
+<section class="content-header">
+  <h1>
+    <a (click)="location.back();"   href="javascript:void(0);">
+      <img class="mr-1 mb-1" src="../../../../assets/images/back-arrow-icon.svg" />
+    </a>
+    {{buildingName}}
+  </h1>
+</section>
+<div class="main-page dashboard">
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="drag-body dashboard-widget">
+        <div class="panel-heading">
+          <h5 class="panel-title"> Zones</h5>
+          <ul class="filter-for-chart">
+            <li>
+              <button [disableRipple]="true" mat-icon-button>
+                <mat-icon>more_horiz</mat-icon>
+              </button>
+            </li>
+          </ul>
+        </div>
+        <mat-card class="dashboard-card mat-card">
+          <div class="cropscontainer facility-user-grid-box-container">
+            <div class="user-grid-box m-r-20 m-b-20" *ngFor="let zone of zoneList">
+              <div class="text-center text-center m-r-20 m-l-20">
+                <div class="crops-img-box">
+                  <img alt="" class="img-fluid" src="{{zone.image == '00000000-0000-0000-0000-000000000000' || zone.image == null ||  zone.image == '' ? _appConstant.noImg: mediaUrl + zone.image}}">
+                </div>
+                <p class="wing-title-details" [title]="zone.name">{{zone.name}}</p>
+              </div>
+              <div class="user-actions d-flex flex-wrap">
+                <!---->
+                <!---->
+                <div class="user-actions-cta text-center ng-star-inserted">
+                  <a class="green" href="javascript:;" title="Edit">
+                    <img alt="Edit" src="../../../assets/images/icon-edit.svg" (click)="getZoneDetails(zone.guid);">
+                  </a>
+                </div>
+                <!---->
+                <div class="user-actions-cta text-center">
+                  <a class="red" href="javascript:void(0)" data-toggle="modal" data-target="#deviceDeleteModal"
+                     (click)="deleteModel(zone)" title="Delete">
+                    <img src="./assets/images/icon-delete.svg">
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="user-grid-box bigaddbutton m-b-20">
+              <a style="cursor:pointer" href="javascript:void(0);" (click)="Respond();">
+                <i class="material-icons">add</i>
+              </a>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+  <!--Zone List end-->
+  <div class="row">
+    <div class="col-12 m-b-30">
+      <div class="drag-body dashboard-widget">
+        <div class="panel-heading">
+          <div class="d-flex align-items-center w-100">
+
+            <div class="p-l-15">
+              <fieldset class="form-group form-field mb-0">
+                <mat-form-field color="primary" class="mb-0">
+                  <mat-select placeholder="Select Type" (selectionChange)="getTypedata($event.value)" [(ngModel)]="selectedZoneType">
+                    <mat-option *ngFor="let zonetype of zoneTypeList" [value]="zonetype?.value">
+                      {{zonetype.text}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="p-l-15 col-3">
+              <fieldset class="form-group form-field mb-0">
+                <mat-form-field color="primary" class="mb-0">
+                  <mat-select placeholder="Select Zone" [(ngModel)]="datazone" (selectionChange)="getLights($event.value)">
+                    <mat-option *ngFor="let zone of zoneDataList" [value]="zone?.value">
+                      {{zone.text}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <section class="content-header" *ngIf="ishow == true">
+    <h1>Lights</h1>
+    <div class="content-header-action">
+      <div class="instance-status-details m-r-20">
+        <div class="instance-status-box d-flex flex-wrap align-items-center">
+          <div class="col">
+            <div class="instance-status-info">
+              <span class="user-status-type status-green">ON</span>
+            </div>
+          </div>
+          <div class="col">
+            <div class="instance-status-info">
+              <span class="user-status-type status-red">OFF</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <form>
+        <div class="search-part">
+          <app-search-render [searchValue]="searchParameters.searchText" (searchEvent)="searchTextCallback($event)">
+          </app-search-render>
+        </div>
+      </form>
+    </div>
+  </section>
+  <div class="row lights-listing-wrapper" *ngIf="ishow == true">
+    <div class="col-lg-4 col-xl-3"
+         *ngFor="let light of lightList;">
+      <div class="user-grid-box">
+        <div *ngIf="light['isConnected']" class=" user-status-indicator status-green"></div>
+        <div *ngIf="!light['isConnected']" class=" user-status-indicator status-red"></div>
+        <div class="grid-inner-flex d-flex align-items-center">
+          <div class="user-detail-box">
+            <p class="user-details">
+              Light ID -
+              <span>
+                <a [routerLink]="['/lights/light-dashboard',light['guid']]">{{light['name']}}</a>
+              </span>
+            </p>
+            <p *ngIf="light['isConnected']">
+              Status -
+              <span [ngClass]="'span-green'">
+                {{light['isConnected'] == true?'ON':'OFF'}}
+              </span>
+            </p>
+            <p *ngIf="!light['isConnected']">
+              Status -
+              <span [ngClass]="'span-red'">
+                {{light['isConnected'] == false?'OFF':'ON'}}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="lightList.length === 0" class="centerclass">No records found</div>
+  </div>
+
+  <div class="row" *ngIf="ishow == true">
+
+    <div class="col-xl-8 col-ld-9">
+      <div class="drag-body dashboard-widget ">
+        <div class="panel-heading">
+          <h5 class="panel-title w-100"> Energy Consumption </h5>
+          <div class="m-r-20">
+            <mat-radio-group (change)="changeGraphFilter($event)" class="d-flex align-items-center" aria-label="Select an option">
+              <mat-radio-button checked value="Day">Day</mat-radio-button>
+              <mat-radio-button value="Week">Week</mat-radio-button>
+              <mat-radio-button value="Month">Month</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <mat-card>
+          <google-chart [data]="lineChartData "></google-chart>
+          <div class="centerclass soil-nutritions" *ngIf="!lineChartData.dataTable.length">
+            No Data found
+          </div>
+        </mat-card>
+      </div>
+    </div>
+
+    <div class="col-xl-4 col-ld-3">
+      <div class="drag-body dashboard-widget ">
+        <div class="panel-heading">
+          <h5 class="panel-title w-100"> Alerts </h5>
+          <div style="margin-right: 20px;" class="tab-link-bar" *ngIf="alerts?.length>0">
+            <a class="text-nowrap" [routerLink]="['/alerts/', zoneId]"
+               href="javascript:;">View All</a>
+          </div>
+        </div>
+        <mat-card class="dashboard-card mat-card pt-0">
+          <ng-scrollbar class="my-scrollbar m-b-55" trackX="false" trackY="true"
+                        autohide="false" [compact]="false" *ngIf="alerts?.length>0">
+            <ul class="alerts-dashboard alerts-building-list">
+              <li [ngClass]="alert['severity']" *ngFor="let alert of alerts">
+                <span class="alerts-date">{{getLocalDate(alert['eventDate'])}}</span>
+                <span class="alerts-info">{{alert.message}}</span>
+              </li>
+            </ul>
+          </ng-scrollbar>
+          <div *ngIf="alerts?.length==0" class="centerclass no-record-building-details">
+            No records
+            found
+          </div>
+          <div class="alert-indicator-wrapper">
+            <div class="alert-indicator-list">
+              <div class="alert-indicator Critical">
+                <span class="legend"></span>
+                <span class="alert-text">Critical</span>
+              </div>
+              <div class="alert-indicator Information">
+                <span class="legend"></span>
+                <span class="alert-text">Information</span>
+              </div>
+              <div class="alert-indicator Major">
+                <span class="legend"></span>
+                <span class="alert-text">Major</span>
+              </div>
+              <div class="alert-indicator Minor">
+                <span class="legend"></span>
+                <span class="alert-text">Minor</span>
+              </div>
+              <div class="alert-indicator Warning">
+                <span class="legend"></span>
+                <span class="alert-text">Warning</span>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+
+  </div>
+
+
+  <section class="create-drawer transform" *ngIf="respondShow">
+    <div class="head">
+      <a href="javascript:void()" class="closedrawer" (click)="closerepond()">
+        <i class="material-icons">close</i>
+      </a>
+      <h2>{{zoneModuleName}}</h2>
+    </div>
+    <div class="form-container">
+      <div class="view-form">
+
+        <form [formGroup]="zoneForm" (ngSubmit)="manageZone();" autocomplete="off" class="form-horizontal common-form">
+          <div class="row">
+            <div class="col-12">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Name<b>*</b></label>
+                <mat-form-field>
+                  <input matInput name="name" formControlName="name" type="text" maxlength="50"
+                         [(ngModel)]="zoneObj['name']" class="form-control" tabindex="1" placeholder="Name">
+                  <div class="form-control-feedback" *ngIf="zoneForm.controls['name'].errors">
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="zoneForm.controls['name'].errors.required && checkSubmitStatus">
+                      Please enter Name
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-12">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Type<b>*</b></label>
+                <mat-form-field>
+                  <mat-select placeholder="Select Type" formControlName="type" [(ngModel)]="zoneObj['type']" tabindex="2">
+                    <mat-option *ngFor="let type of typeList" [value]="type.value">
+                      {{type.text}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="form-control-feedback" *ngIf="zoneForm.controls['type'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="zoneForm.controls['type'].errors.required && checkSubmitStatus">
+                      Please select Type
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              <mat-form-field>
+                <textarea matInput rows="3" class="form-control" formControlName="description" placeholder="Description"
+                          name="description" [(ngModel)]="zoneObj['description']" maxlength="255" tabindex="3"></textarea>
+              </mat-form-field>
+            </div>
+            <div class="col-12 add-build">
+              <mat-label class="d-block">Zone Image</mat-label>
+              <label for="myFile" class="upload-file" title=".jpg, .jpeg, .png">
+                <input #imageupload formControlName="imageFile" #myFile id="myFile" (change)="handleImageInput($event)" class="upload-image" type="file" tabindex="4" accept=".jpg, .jpeg, .png" />
+                <div class="form-control-feedback" *ngIf="zoneForm.controls['imageFile'].errors">
+                  <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                     *ngIf="zoneForm.controls['imageFile'].errors.required && checkSubmitStatus">
+                    Upload Image
+                  </p>
+                </div>
+              </label>
+              <fieldset class="form-group">
+                <ul class="image-list m-t-10">
+                  <li>
+                    <div class="user-profle-image">
+                      <img alt="" class="img-fluid"
+                           src="{{zoneObj['image'] == '00000000-0000-0000-0000-000000000000' || zoneObj['image'] == null || zoneObj['image'] == '' ? _appConstant.noImg:  zoneObj['image']}}" />
+                    </div>
+                    <span *ngIf="zoneObj['image']">
+                      <i class="material-icons" (click)="imageRemove()">clear</i>
+                    </span>
+                  </li>
+                </ul>
+              </fieldset>
+              <p>{{fileName}}</p>
+            </div>
+            <div class="col-12 mt-4">
+              <div class="form-field">
+                <div class="input-field ">
+                  <button mat-flat-button color="primary" class="text-white " title="{{buttonname}}" type="submit">
+                    {{buttonname}}
+                  </button>
+                  <button mat-flat-button color="primary" class="text-white m-l-10" (click)="closerepond()"
+                          title="Cancel">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>

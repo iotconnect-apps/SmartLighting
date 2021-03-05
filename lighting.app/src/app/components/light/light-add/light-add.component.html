@@ -1,0 +1,201 @@
+<!-- Content Header (Page header) -->
+
+<section class="content-header">
+  <h1>{{moduleName}}</h1>
+</section>
+<!-- Main content -->
+
+<section class="content">
+  <mat-card class="support-card">
+    <div class="row">
+      <div class="col col-ld-11">
+        <form [formGroup]="lightForm" (ngSubmit)="addLight()" autocomplete="off" class="form-horizontal common-form">
+          <div class="row">
+
+            <div class="col-md-4">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Building<b>*</b></label>
+                <mat-form-field>
+                  <mat-select placeholder="Select Building" formControlName="lightGuid" [(value)]="selectedBuilding"
+                              tabindex="1" (selectionChange)="getZoneTypeList(); getZone($event.value, selectedZoneType);">
+                    <mat-option *ngFor="let building of buildingList" [value]="getdata(building?.value)">
+                      {{building.text}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="form-control-feedback" *ngIf="lightForm.controls['lightGuid'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="lightForm.controls['lightGuid'].errors.required && checkSubmitStatus">
+                      Please select Building
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-4">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Zone Type<b>*</b></label>
+                <mat-form-field>
+                  <mat-select placeholder="Select Zone Type" formControlName="zoneType" [(value)]="selectedZoneType"
+                              tabindex="2" (selectionChange)="getZone(selectedBuilding, $event.value)">
+                    <mat-option *ngFor="let type of typeList" [value]="getdata(type?.value)">
+                      {{type.text}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="form-control-feedback" *ngIf="lightForm.controls['zoneType'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="lightForm.controls['zoneType'].errors.required && checkSubmitStatus">
+                      Please select Zone Type
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-4">
+              <fieldset class="form-group form-field">
+                <label class="form-label">
+                  Zone<b>* </b>
+                  <a *ngIf="!hasZone" class="actionicon m-l-10" href="javascript:void(0);" title="{{addZoneMsg}}">
+                    <img src="../../../../assets/images/i-info-icon.svg" alt="Zone">
+                  </a>
+                </label>
+                <mat-form-field>
+                  <mat-select placeholder="{{selectZone}}" formControlName="entityGuid"  tabindex="3">
+                    <mat-option *ngFor="let zone of zoneList" [value]="zone?.value">
+                      {{zone.text}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="form-control-feedback" *ngIf="lightForm.controls['entityGuid'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="lightForm.controls['entityGuid'].errors.required && checkSubmitStatus">
+                      Please select Zone
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Name<b>*</b></label>
+                <mat-form-field>
+                  <input matInput name="name" formControlName="name" maxlength="60" type="text" 
+                         class="form-control" tabindex="4" placeholder="Name">
+                  <div class="form-control-feedback" *ngIf="lightForm.controls['name'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="lightForm.controls['name'].errors.required && checkSubmitStatus">
+                      Please enter Name
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-4">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Light ID<b>*</b></label>
+                <mat-form-field>
+                  <input matInput name="uniqueId" formControlName="uniqueId" type="text"
+                         class="form-control" tabindex="5" placeholder="Light ID" maxlength="128">
+                  <div class="form-control-feedback" *ngIf="lightForm.controls['uniqueId'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="lightForm.controls['uniqueId'].errors.required && checkSubmitStatus">
+                      Please enter Light ID
+                    </p>
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="lightForm.controls['uniqueId'].errors.pattern && checkSubmitStatus">
+                      Special characters and white space not allowed in Light ID
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-4">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Capacity<b>*</b></label>
+                <mat-form-field>
+                  <input matInput name="capacity" formControlName="capacity" type="number"
+                         class="form-control" tabindex="6" placeholder="Light Voltage Capacity">
+                  <div class="form-control-feedback" *ngIf="lightForm.controls['capacity'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="lightForm.controls['capacity'].errors.required && checkSubmitStatus">
+                      Please enter capacity
+                    </p>
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="lightForm.controls['capacity'].errors.pattern && checkSubmitStatus">
+                      capacity invalid
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Specification</label>
+                <mat-form-field>
+                  <textarea matInput rows="3" maxlength="260" tabindex="7" class="form-control" formControlName="specification"
+                            placeholder="Specification" name="specification"></textarea>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-4">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Description</label>
+                <mat-form-field>
+                  <textarea matInput rows="3" maxlength="260" tabindex="8" class="form-control" formControlName="description"
+                            placeholder="Description" name="description"></textarea>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-4 add-build">
+              <mat-label> Upload Image</mat-label>
+              <fieldset class="form-group">
+                <label for="myFile" class="upload-file" title=".jpg, .jpeg, .png">
+                  <input formControlName="imageFile" #myFile id="myFile" (change)="handleImageInput($event)"
+                         class="upload-image" type="file" accept=".jpg, .jpeg, .png" tabindex="9" />
+                  <div class="form-control-feedback" *ngIf="lightForm.controls['imageFile'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="lightForm.controls['imageFile'].errors.required && checkSubmitStatus">
+                      Upload Image
+                    </p>
+                  </div>
+                </label>
+              </fieldset>
+              <fieldset class="form-group">
+                <ul class="image-list ">
+                  <li>
+                    <div class="user-profle-image">
+                      <img alt="" class="img-fluid"
+                           src="{{fileUrl == '00000000-0000-0000-0000-000000000000' || fileUrl == null || fileUrl == '' ? _appConstant.noImg:  fileUrl}}" />
+                    </div>
+                    <span *ngIf="fileUrl">
+                      <i class="material-icons" (click)="imageRemove()">clear</i>
+                    </span>
+                  </li>
+                </ul>
+              </fieldset>
+              <p>{{fileName}}</p>
+            </div>
+          </div>
+          <div class="row mt-4 mb-0">
+            <div class="col-lg-12">
+              <div class="form-field">
+                <div class="input-field ">
+                  <button mat-flat-button color="primary" tabindex="10"
+                          class="text-white " title="Submit" type="submit">
+                    Submit
+                  </button>
+                  <button mat-flat-button color="primary" tabindex="11" class="text-white m-l-10" [routerLink]="['/lights']"
+                          title="Cancel">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-card>
+</section>

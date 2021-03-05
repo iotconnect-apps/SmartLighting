@@ -1,0 +1,282 @@
+<section class="content-header">
+  <h1>Dashboard</h1>
+  <div class="content-header-action">
+    <div class="tab-link-bar">
+      <a [routerLink]="['/dynamic-dashboard']" href="javascript:;">Tryout New Dashboard</a>
+    </div>
+  </div>
+</section>
+<div class="main-page dashboard" *ngIf="!isDynamicDashboard">
+  <div class="row dashboardtop-widget">
+    <div class="col-xl-2 col-lg-3">
+      <div style="background-color: #80dceb;" class="col row align-items-center h-100">
+        <div class="col-lg-5 text-center icon-content">
+          <i class="fas fa-building fa-5x" style="color: rgb(0, 0, 0);"></i>
+        </div>
+        <div class="text-center col-lg-7" ng-reflect-klass="text-center">
+          <h4 style="font-size: 25px; font-family: ABeeZee; color: rgb(0, 0, 0);">
+            {{totalBuilding}}
+          </h4>
+          <p class="m-0" style="font-size: 16px; font-family: ABeeZee; color: rgb(0, 0, 0);">
+            Total Buildings
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-4">
+      <div style="background-color: #41c363;" class="col row align-items-center h-100">
+        <div class="col-lg-5 text-center icon-content">
+          <i class="fas fa-cog fa-5x" style="color: rgb(0, 0, 0);"></i>
+        </div>
+        <div class="text-center p-10 col-lg-7" ng-reflect-klass="text-center p-10">
+          <div class="widget-readings-box">
+            <div class="widget-reading-right">
+              <h4 style="font-size: 25px; font-family: ABeeZee; color: rgb(0, 0, 0);">{{underMaintenanceCount}}</h4>
+              <p>Maintenance</p>
+            </div>
+          </div>
+          <p class="small-widget-heading" style="font-size: 16px; font-family: ABeeZee; color: rgb(0, 0, 0);">Total
+            Lights
+            : <strong>{{totallight}}</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-4">
+      <div style="background-color: #ffd100;" class="col row align-items-center h-100">
+        <div class="col-lg-5 text-center icon-content"><i class="fas fa-adjust fa-5x" style="color: rgb(0, 0, 0);"></i>
+        </div>
+        <div class="text-center p-10 col-lg-7">
+          <div class="widget-readings-box">
+            <div class="widget-reading-left">
+              <h4 style="font-size: 25px; font-family: ABeeZee; color: rgb(0, 0, 0);">{{connectedDeviceCount}}</h4>
+              <p style="font-size: 16px; font-family: ABeeZee; color: rgb(0, 0, 0);">On</p>
+            </div>
+            <div class="widget-reading-right">
+              <h4 style="font-size: 25px; font-family: ABeeZee; color: rgb(0, 0, 0);">{{disconnectedDeviceCount}}</h4>
+              <p style="font-size: 16px; font-family: ABeeZee; color: rgb(0, 0, 0);">Off</p>
+            </div>
+          </div>
+          <p class="small-widget-heading m-0">Current Status Of Lights</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-3">
+      <div style="background-color: #919191;" class="col row align-items-center h-100">
+        <div class="col-lg-5 text-center icon-content">
+          <i class="fas fa-bolt fa-5x" style="color: rgb(0, 0, 0);"></i>
+        </div>
+        <div class="text-center col-lg-7">
+          <h4 style="font-size: 25px; font-family: ABeeZee; color: rgb(0, 0, 0);">{{energyCount}} KW</h4>
+          <p class="small-widget-heading" style="font-size: 16px; font-family: ABeeZee; color: rgb(0, 0, 0);">Energy
+            Consumption</p>
+        </div>
+      </div>
+    </div>
+
+
+    
+    <div class="col-xl-2 col-lg-3">
+    <div style="background-color: #d2d2d2;" class="col row align-items-center h-100">
+      <div class="col-lg-5 text-center icon-content">
+        <i class="fas fa-bell fa-5x" style="color: rgb(0, 0, 0);"></i>
+      </div>
+      <div class="text-center col-lg-7">
+        <h4 style="font-size: 25px; font-family: ABeeZee; color: rgb(0, 0, 0);">{{totalAlerts}}</h4>
+        <p class="small-widget-heading" style="font-size: 16px; font-family: ABeeZee; color: rgb(0, 0, 0);">Total Alerts
+          (Today)</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  <div class="row">
+    <div class="col-xl-8  m-b-30">
+      <div class="drag-body dashboard-widget h-100">
+        <div class="panel-heading">
+          <h5 class="panel-title"> Locations </h5>
+          <div class="mr-3">
+            <button mat-flat-button type="button" color="primary" title="Map" [ngClass]=" mapview ? 'active' : ''"
+              (click)="mapview = !mapview">Map</button>
+            <button mat-flat-button type="button" color="primary" class="ml-3" title="List"
+              [ngClass]="!mapview ? 'active' : ''" (click)="mapview = !mapview">List</button>
+          </div>
+        </div>
+        <mat-card class="dashboard-card mat-card p-0">
+          <div *ngIf="!mapview" id="map-list">
+            <div class="map-list-wrapper">
+              <div class="user-grid-wrapper p-3 pb-0 dashboard-user-grid-wrapper">
+                <section class="content-header p-t-10">
+                  <h2 class="panel-title"> Buildings </h2>
+                  <div class="ml-auto content-header-action">
+                    <form>
+                      <div>
+                        <app-search-render [searchValue]="searchParameters.searchText"
+                          (searchEvent)="searchTextCallback($event)">
+                        </app-search-render>
+                      </div>
+                      <div class="p-l-20">
+                        <button [routerLink]="['/buildings/add']" type="button" mat-flat-button color="primary"
+                          lass="text-white">
+                          Add Building
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </section>
+                <div class="row">
+                  <div class="col-ld-6 col-lg-6 col-xl-6 m-b-30" *ngFor="let building of buildingList">
+                    <div class="user-grid-box">
+                      <div class="user-status-indicator status-green"></div>
+                      <div class="grid-inner-flex d-flex align-items-center">
+                        <div class="user-detail-box">
+                          <h3 class="user-name"><a
+                              [routerLink]="['/buildings/building-dashboard',building['guid']]">{{building['name']}}</a>
+                          </h3>
+                          <p class="user-details">Total Zones - <span>{{building.totalSubEntities}}</span></p>
+                          <p class="user-details">Total Lights - <span>{{building.totalDevices}}</span></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="buildingList.length === 0" class="centerclass">No records found</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="mapview" id="map-view">
+            <agm-map [latitude]="lat" [longitude]="lng">
+              <agm-marker *ngFor="let building of buildingList" [latitude]="building.latitude ? building.latitude : lat"
+                [longitude]="building.longitude ? building.longitude : lng"
+                [iconUrl]="{ url: '../../../../assets/images/icon-location.svg'}">
+                <agm-info-window [isOpen]="true" #infoWindow>
+                  <strong>{{building.name}}</strong>
+                </agm-info-window>
+              </agm-marker>
+            </agm-map>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+    <div class="col-xl-4 m-b-30">
+      <div class="drag-body dashboard-widget">
+        <div class="panel-heading">
+          <h5 class="panel-title w-100"> Top Usage Lights </h5>
+        </div>
+        <mat-card class="dashboard-card mat-card m-b-30">
+          <mat-radio-group aria-label="Select an option" (change)="changeenergy($event)">
+            <mat-radio-button checked class="m-r-10" value="Day">Day</mat-radio-button>
+            <mat-radio-button class="m-r-10" value="Week">Week</mat-radio-button>
+            <mat-radio-button class="m-r-10" value="Month">Month</mat-radio-button>
+          </mat-radio-group>
+          <div class="centerclass soil-nutritions no-records-usage-box " *ngIf="graphdata.length == 0">
+            No Data found
+          </div>
+          <ng-scrollbar class="my-scrollbar" trackX="false" trackY="true" autohide="false" [compact]="false">
+            <ul class="usage-lights-list" *ngIf="graphdata.length != 0">
+              <li *ngFor="let usage of graphdata;">
+                <div class="data-point-progress">
+                  <div class="progress">
+                    <div class="progress-bar " role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                      [ngStyle]="{ 'width' : getper(usage.energy) + '%'}">
+                    </div>
+                  </div>
+                  <div class="data-point-progress-title">
+                    <span>{{usage.energy}} KW</span>
+                    <span>{{usage.zone}} of {{usage.building}}</span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </ng-scrollbar>
+        </mat-card>
+      </div>
+      <div class="drag-body dashboard-widget">
+        <div class="panel-heading">
+          <h5 class="panel-title w-100"> Alerts </h5>
+        </div>
+        <mat-card class="dashboard-card mat-card pt-0">
+          <ng-scrollbar class="my-scrollbar m-b-55" trackX="false" trackY="true" autohide="false" [compact]="false">
+            <ul *ngIf="alerts.length>0" class="alerts-dashboard dashboard-alerts-custom">
+              <li [ngClass]="alert['severity']" *ngFor="let alert of alerts">
+                <span class="alerts-date">{{getLocalDate(alert['eventDate'])}}</span>
+                <span class="alerts-info">{{alert.message}}</span>
+              </li>
+            </ul>
+          </ng-scrollbar>
+          <div *ngIf="alerts.length==0" class="centerclass no-records-alerts-box">No records found</div>
+          <div class="alert-indicator-wrapper">
+            <div class="alert-indicator-list">
+              <div class="alert-indicator Critical">
+                <span class="legend"></span>
+                <span class="alert-text">Critical</span>
+              </div>
+              <div class="alert-indicator Information">
+                <span class="legend"></span>
+                <span class="alert-text">Information</span>
+              </div>
+              <div class="alert-indicator Major">
+                <span class="legend"></span>
+                <span class="alert-text">Major</span>
+              </div>
+              <div class="alert-indicator Minor">
+                <span class="legend"></span>
+                <span class="alert-text">Minor</span>
+              </div>
+              <div class="alert-indicator Warning">
+                <span class="legend"></span>
+                <span class="alert-text">Warning</span>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="main-page dashboard" *ngIf="isDynamicDashboard && dashboardList.length > 0">
+  <app-size-detector (deviceSizeChange)="deviceSizeChange($event)"></app-size-detector>
+  <div class="main-content">
+    <div class="gridster-wrapper">
+      <gridster [options]="options" class="gridster white-bkd" #gridster>
+        <gridster-item [item]="item" *ngFor="let item of dashboardList[dashboardData.index].widgets;let index = index;"
+          [class]="item.properties?.className +' '+ item.componentName"
+          [ngStyle]="{'background': item.widgetProperty?.background,'width':item.properties?.w+'px','height':item.properties?.h+'px'}">
+          <app-widget-counter-a *ngIf="item.componentName === 'widget-counter-a'" [resizeEvent]="resizeEvent"
+            [widget]="item" [count]="dashCountObj">
+          </app-widget-counter-a>
+          <app-widget-counter-b *ngIf="item.componentName === 'widget-counter-b'" [resizeEvent]="resizeEvent"
+            [widget]="item" [count]="dashCountObj">
+          </app-widget-counter-b>
+          <app-widget-counter-c *ngIf="item.componentName === 'widget-counter-c'" [resizeEvent]="resizeEvent"
+            [widget]="item" [count]="dashCountObj">
+          </app-widget-counter-c>
+          <app-widget-counter-d *ngIf="item.componentName === 'widget-counter-d'" [resizeEvent]="resizeEvent"
+            [widget]="item" [count]="dashCountObj">
+          </app-widget-counter-d>
+          <app-widget-counter-e *ngIf="item.componentName === 'widget-counter-e'" [resizeEvent]="resizeEvent"
+            [widget]="item" [count]="dashCountObj">
+          </app-widget-counter-e>
+          <app-widget-alert-a *ngIf="item.componentName === 'widget-alert-a'" [resizeEvent]="resizeEvent"
+            [alertLimitchangeEvent]="alertLimitchangeEvent" [widget]="item">
+          </app-widget-alert-a>
+          <app-widget-map-a *ngIf="item.componentName === 'widget-map-a'" [resizeEvent]="resizeEvent" [widget]="item"
+            [zoomChangeEvent]="zoomChangeEvent">
+          </app-widget-map-a>
+          <app-widget-chart-a [class]="item.properties?.className +' '+ item.componentName" [ngStyle]="{'width':item.properties?.w+'px',
+					'height':item.properties?.h+'px'}" *ngIf="item.componentName === 'widget-chart-a'" [resizeEvent]="resizeEvent"
+            [chartTypeChangeEvent]="chartTypeChangeEvent" [widget]="item" [gridster]="gridster"></app-widget-chart-a>
+          <app-widget-chart-b [class]="item.properties?.className +' '+ item.componentName" [ngStyle]="{'width':item.properties?.w+'px',
+					'height':item.properties?.h+'px'}" *ngIf="item.componentName === 'widget-chart-b'" [resizeEvent]="resizeEvent"
+            [chartTypeChangeEvent]="chartTypeChangeEvent" [telemetryDeviceChangeEvent]="telemetryDeviceChangeEvent"
+            [telemetryAttributeChangeEvent]="telemetryAttributeChangeEvent" [widget]="item" [deviceData]="deviceData">
+          </app-widget-chart-b>
+        </gridster-item>
+      </gridster>
+    </div>
+  </div>
+</div>

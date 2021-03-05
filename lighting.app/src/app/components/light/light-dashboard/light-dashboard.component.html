@@ -1,0 +1,287 @@
+
+<section class="content-header">
+  <h1>
+    <a [routerLink]="['/lights']">
+      <img class="mr-1 mb-1" src="../../../../assets/images/back-arrow-icon.svg" />
+    </a>
+    {{lightobject.uniqueId}}
+  </h1>
+</section>
+<div class="content">
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="drag-body dashboard-widget m-b-30">
+        <div class="panel-heading">
+          <h5 class="panel-title">  <div class="device-status mr-2" [ngClass]="(deviceIsConnected)?'on':'off'"></div>Light Details
+          </h5> 
+          <a data-toggle="modal" class="m-r-10" href="#myModal">
+            <img src="../../../assets/images/telemetry-icon.svg"><strong style="margin: 5px;">Telemetry Data</strong></a>         
+        </div>
+        <mat-card class="dashboard-card">
+          <h3>Light ID - <strong>{{uniqueId}}</strong></h3>
+          <div class="row no-gutters m-t-15">
+            <div class="col-lg-6">
+              <div class="light-details-box light-details-left">
+                <ul class="list-details-list">
+                  <li>Capacity - <strong>{{capacity}}KW</strong></li>
+                  <li>Template - <strong>{{templateName}}</strong></li>
+                  <li>Building - <strong>{{entityName}}</strong></li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="light-details-box light-details-right">
+                <ul class="list-details-list">
+                  <li>Controlled By</li>
+                  <li><span>Smart Schedule</span> <mat-slide-toggle name = "scheduledFlag" (change)="onChange($event)" [checked]="lightobject.scheduledFlag" class="m-l-10"></mat-slide-toggle>
+                  </li>
+                  <li><span>Presence</span> <mat-slide-toggle name = "presenceFlag" (change)="onChange($event)" [checked]="lightobject.presenceFlag" class="m-l-10"></mat-slide-toggle>
+                  </li>
+                  <li><span>Light Intensity</span> <mat-slide-toggle name = "intensityFlag" (change)="onChange($event)" [checked]="lightobject.intensityFlag" class="m-l-10"></mat-slide-toggle>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+
+      <div class="drag-body dashboard-widget m-b-30">
+        <div class="panel-heading">
+          <h5 class="panel-title"> Energy Consumption </h5>
+           <div class="m-r-20">
+          <mat-radio-group (change)="changeGraphFilter($event)" aria-label="Select an option" class="d-flex align-items-center">
+            <mat-radio-button checked value="Day">Day</mat-radio-button>
+            <mat-radio-button value="Week">Week</mat-radio-button>
+            <mat-radio-button value="Month">Month</mat-radio-button>
+          </mat-radio-group>
+          </div>          
+              
+        </div>   
+        <mat-card class="dashboard-card">
+          <h3>Consumption</h3>
+          <google-chart *ngIf="lineChartData.dataTable.length" [data]="lineChartData "></google-chart>
+          <div class="centerclass soil-nutritions" *ngIf="!lineChartData.dataTable.length">
+            No Data found
+          </div>
+        </mat-card>
+      </div>
+
+    </div>
+
+    <div class="col-lg-6">
+        <form [formGroup]="LightingForm" (ngSubmit)="manageLighting()" autocomplete="off" class="form-horizontal common-form">
+      <div class="drag-body dashboard-widget m-b-30">
+        <div class="panel-heading">
+          <h5 class="panel-title"> Dimming </h5>
+        </div>
+        <mat-card class="dashboard-card" >
+          <div class="p-t-10 p-b-15">
+            <ng5-slider [(value)]="sliderValue" formControlName="Dimming" [options]="sliderOptions"></ng5-slider>
+          </div>
+        </mat-card>
+      </div>
+
+      <div class="drag-body dashboard-widget m-b-30">
+        <div class="panel-heading">
+          <h5 class="panel-title"> Light Control </h5>
+        </div>
+        <mat-card class="dashboard-card custom-timing-card-height" *ngIf="isshow == false">
+          <div class="p-t-15 p-b-15">
+             
+            <mat-tab-group [selectedIndex]="selectedIndex">
+              <mat-tab label="Smart Schedule"  *ngIf="scheduledFlag == true">
+                <div class="">
+                  <h3><strong>Enter Timings</strong></h3>
+                    <!-- <label class="d-block m-b-5 m-t-10"></label> -->
+                    <div class="row align-items-end">
+                      <div class="col-lg-6">
+                        <label>Start Time</label>
+                        <mat-form-field>
+                          
+                          <input matInput name="AmTime" formControlName="AmTime" 
+                          placeholder="Start Time" aria-label="12hr format" 
+                          [format]="24" [(ngModel)]="formobject['AmTime']" 
+                          [ngxTimepicker]="start" readonly>
+                          <ngx-material-timepicker-toggle matSuffix  [for]="start"></ngx-material-timepicker-toggle>
+                          <ngx-material-timepicker #start></ngx-material-timepicker>
+
+                          <div class="form-control-feedback" *ngIf="LightingForm.controls['AmTime'].errors">
+                            <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                               *ngIf="LightingForm.controls['AmTime'].errors.required && checkSubmitStatus">
+                              Please select Start Time
+                            </p>
+                          </div>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-lg-6">
+                        <label>End Time</label>
+                        <mat-form-field>
+                          <input matInput name="PmTime" formControlName="PmTime" 
+                          placeholder="End Time" aria-label="12hr format" [format]="24" 
+                          [(ngModel)]="formobject['PmTime']"   [ngxTimepicker]="end"  readonly>
+                          <ngx-material-timepicker-toggle matSuffix  [for]="end"></ngx-material-timepicker-toggle>
+                          <ngx-material-timepicker  #end></ngx-material-timepicker>
+                          <div class="form-control-feedback"
+                          *ngIf="LightingForm.errors?.invalid && !LightingForm.controls['PmTime'].errors">
+                       <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                          *ngIf="LightingForm.errors?.invalid && checkSubmitStatus">
+                          End time is less than start time
+                       </p>
+                     </div>
+                          <div class="form-control-feedback" *ngIf="LightingForm.controls['PmTime'].errors">
+                            <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                               *ngIf="LightingForm.controls['PmTime'].errors.required && checkSubmitStatus">
+                              Please select End Time
+                            </p>
+                          </div>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                </div>
+              </mat-tab>
+              <mat-tab label="Presence" *ngIf="presenceFlag == true">
+                  <label>Enter Second</label>
+                  <mat-form-field class="m-r-10">
+                      <input matInput type="text" maxlength = "5" name="PresenceTime" formControlName="PresenceTime" placeholder="Enter Second" [(ngModel)]="formobject['PresenceTime']">
+                      <div class="form-control-feedback" *ngIf="LightingForm.controls['PresenceTime'].errors">
+                        <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                           *ngIf="LightingForm.controls['PresenceTime'].errors.required && checkSubmitStatus">
+                          Please Enter PresenceTime
+                        </p>
+                        <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                        *ngIf="LightingForm.controls['PresenceTime'].errors.pattern && checkSubmitStatus">
+                       Please enter valid PresenceTime
+                     </p>
+                      </div>
+                    </mat-form-field>
+              </mat-tab>
+              <mat-tab label="Light Intensity" *ngIf="intensityFlag == true">
+                  <div class="">
+                      <h3><strong>Enter Intensity</strong></h3>
+                        <div class="row align-items-end">
+                          <div class="col-lg-6">
+                            <label>Enter intensity On</label>
+                            <mat-form-field>
+                              <input matInput type="text" maxlength = "5" name="IntensityOn" formControlName="IntensityOn" placeholder="Enter intensity On" [(ngModel)]="formobject['IntensityOn']">
+                              <div class="form-control-feedback" *ngIf="LightingForm.controls['IntensityOn'].errors">
+                                <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                                   *ngIf="LightingForm.controls['IntensityOn'].errors.required && checkSubmitStatus">
+                                   Please Enter IntensityOn
+                                </p>
+                                <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                                *ngIf="LightingForm.controls['IntensityOn'].errors.pattern && checkSubmitStatus">
+                               Please enter valid IntensityOn
+                             </p>
+                              </div>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-lg-6">
+                            <label>Enter intensity off</label>
+                            <mat-form-field>
+                              <input matInput type="text" maxlength = "5" name="IntensityOff" formControlName="IntensityOff"  [(ngModel)]="formobject['IntensityOff']" placeholder="Enter intensity off">
+                              <div class="form-control-feedback" *ngIf="LightingForm.controls['IntensityOff'].errors">
+                                <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                                   *ngIf="LightingForm.controls['IntensityOff'].errors.required && checkSubmitStatus">
+                                  Please Enter IntensityOff
+                                </p>
+                                <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                                *ngIf="LightingForm.controls['IntensityOff'].errors.pattern && checkSubmitStatus">
+                               Please enter valid IntensityOff
+                             </p>
+                              </div>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                    </div>
+              </mat-tab>
+            </mat-tab-group>
+            <div class="button-wrapper">
+                <button type="submit" mat-flat-button color="primary" class="text-white">Save</button>
+                <button type="button" mat-flat-button color="primary" (click) = cleardata(); class="text-white m-l-10">Cancel</button>
+              </div>
+           
+         
+          </div>
+       
+        </mat-card>
+      </div>
+    </form>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="drag-body dashboard-widget m-b-30">
+        <div class="panel-heading">
+          <h5 class="panel-title"> Photo Electric Sensor </h5>
+          <div class="m-r-20">
+            <mat-radio-group (change)="changephotoelectrics($event)" class="d-flex align-items-center" aria-label="Select an option">
+              <mat-radio-button checked value="Day">Day</mat-radio-button>
+              <mat-radio-button value="Week">Week</mat-radio-button>
+              <mat-radio-button value="Month">Month</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <mat-card class="dashboard-card">
+          <google-chart *ngIf="photoelectricsChartData.dataTable.length" [data]="photoelectricsChartData "></google-chart>
+          <div class="centerclass soil-nutritions" *ngIf="!photoelectricsChartData.dataTable.length">
+            No Data found
+          </div>
+        </mat-card>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="drag-body dashboard-widget m-b-30">
+        <div class="panel-heading">
+          <h5 class="panel-title"> Light Intensity Sensor </h5>
+          <div class="m-r-20">
+            <mat-radio-group (change)="changeintensity($event)" class="d-flex align-items-center" aria-label="Select an option">
+              <mat-radio-button checked value="Day">Day</mat-radio-button>
+              <mat-radio-button value="Week">Week</mat-radio-button>
+              <mat-radio-button value="Month">Month</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <mat-card class="dashboard-card">
+          <google-chart *ngIf="intensityChartData.dataTable.length" [data]="intensityChartData "></google-chart>
+          <div class="centerclass soil-nutritions" *ngIf="!intensityChartData.dataTable.length">
+            No Data found
+          </div>
+        </mat-card>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal" id="myModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content drag-body ">
+
+      <div class="panel-heading">
+        <h4 class="panel-title">Telemetry Data</h4>
+        <button type="button" [disableRipple]="true" matSuffix mat-button class="close mr-3"
+                data-dismiss="modal">
+          &times;
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-body-header justify-content-end align-items-center">
+          <h2>{{uniqueId}}</h2>
+          <button mat-icon-button class="dropdown-toggle custom-dropdown-toggle" data-toggle="dropdown">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+
+        </div>
+        <div class="modal-body-data">
+          <div>
+
+            <canvas baseChart [chartType]="'line'" [datasets]="datasets" [options]="optionsdata">
+            </canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

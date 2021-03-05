@@ -1,0 +1,52 @@
+<div class="dashboard-chart topwidget-2">
+	<div class="dashboard-chart-item">
+		<div class="topwidget-icon" *ngIf="widget.widgetProperty?.contents?.entitiesIcon?.isRequired">
+			<i [ngStyle]="{'color':widget.widgetProperty?.contents?.entitiesIcon?.fontColor}"  class="{{widget?.widgetProperty?.contents?.entitiesIcon?.iconClass}} fa-{{widget?.widgetProperty?.contents?.entitiesIcon?.fontSize}}x"></i>
+		</div>
+		<p [ngStyle]="{
+			'font-size':widget.widgetProperty?.contents?.entities?.fontSize+'px',
+			'font-family':widget.widgetProperty?.contents?.entities?.fontFamily,
+			'color':widget.widgetProperty?.contents?.entities?.fontColor}">{{widget?.widgetProperty?.contents?.entities?.title}}</p>
+		<div class="connected-disconnected-wrapper">
+			<div class="connected-disconnected-item connected">
+				<div class="connected-disconnected-tile" 
+					[ngStyle]="{
+					'font-size':widget.widgetProperty?.contents?.active?.fontSize+'px',
+					'font-family':widget.widgetProperty?.contents?.active?.fontFamily,
+					'color':widget.widgetProperty?.contents?.active?.fontColor}">{{widget?.widgetProperty?.contents?.active?.title}}
+				</div>
+				<div class="connected-disconnected-data-wrapper">
+					<div class="connected-disconnected-data-item">
+						<div class="connected-disconnected-data text-green"
+							[ngStyle]="{
+							'font-size':widget.widgetProperty?.contents?.activeCount?.fontSize+'px',
+							'font-family':widget.widgetProperty?.contents?.activeCount?.fontFamily,
+							'color':widget.widgetProperty?.contents?.activeCount?.fontColor}">
+							{{count.active}}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="connected-disconnected-item disconnected">
+				<div class="connected-disconnected-tile"
+					[ngStyle]="{
+					'font-size':widget.widgetProperty?.contents?.inactive?.fontSize+'px',
+					'font-family':widget.widgetProperty?.contents?.inactive?.fontFamily,
+					'color':widget.widgetProperty?.contents?.inactive?.fontColor}">
+					{{widget?.widgetProperty?.contents?.inactive?.title}}
+				</div>
+				<div class="connected-disconnected-data-wrapper">
+					<div class="connected-disconnected-data-item">
+						<div class="connected-disconnected-data text-red"
+						[ngStyle]="{
+						'font-size':widget.widgetProperty?.contents?.inactiveCount?.fontSize+'px',
+						'font-family':widget.widgetProperty?.contents?.inactiveCount?.fontFamily,
+						'color':widget.widgetProperty?.contents?.inactiveCount?.fontColor}">
+							{{count.inactive}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

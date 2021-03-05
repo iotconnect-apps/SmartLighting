@@ -1,0 +1,36 @@
+
+
+<div class="col row align-items-center h-100">
+	<div class="col-lg-5 text-center icon-content"
+	  *ngIf="widget.widgetProperty?.contents?.icon?.isRequired">
+		  <i [ngStyle]="{'color':widget.widgetProperty?.contents?.icon?.fontColor}"
+		  class="{{widget?.widgetProperty?.contents?.icon?.iconClass}} fa-{{widget?.widgetProperty?.contents?.icon?.fontSize}}x"></i>
+	  </div>
+	  <div class="text-center p-10" [ngClass]="{'col-lg-7':widget.widgetProperty?.contents?.icon?.isRequired,'col-lg-12':!widget.widgetProperty?.contents?.icon?.isRequired}">
+		  <div  class="widget-readings-box">
+			<div class="widget-reading-left">
+				<h4 [ngStyle]="{
+					'font-size':widget.widgetProperty?.contents?.count?.fontSize+'px',
+					'font-family':widget.widgetProperty?.contents?.count?.fontFamily,
+					'color':widget.widgetProperty?.contents?.count?.fontColor}">{{count.connectedDeviceCount}}</h4>
+				<p [ngStyle]="{
+					'font-size':widget.widgetProperty?.contents?.entities?.fontSize+'px',
+					'font-family':widget.widgetProperty?.contents?.entities?.fontFamily,
+					'color':widget.widgetProperty?.contents?.entities?.fontColor}">On</p>
+			</div>
+			<div class="widget-reading-right">
+				<h4 [ngStyle]="{
+					'font-size':widget.widgetProperty?.contents?.count?.fontSize+'px',
+					'font-family':widget.widgetProperty?.contents?.count?.fontFamily,
+					'color':widget.widgetProperty?.contents?.count?.fontColor}">{{count.disconnectedDeviceCount}}</h4>
+				<p [ngStyle]="{
+					'font-size':widget.widgetProperty?.contents?.entities?.fontSize+'px',
+					'font-family':widget.widgetProperty?.contents?.entities?.fontFamily,
+					'color':widget.widgetProperty?.contents?.entities?.fontColor}">Off</p>
+			</div>
+		  </div>
+		  <p class="small-widget-heading m-0">{{widget?.widgetProperty?.contents?.entities?.title}}</p>
+		
+	</div>
+	
+  </div>
